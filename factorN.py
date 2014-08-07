@@ -14,6 +14,7 @@ __copyright__ = "Copyright: (c) 2014 Jin Zhang"
 __license__ = "Python"
 
 import gmpy2
+import timeit
 from gmpy2 import mpz
 
 def factor(A,N):
@@ -58,7 +59,9 @@ which is a product of two relatively close primes p/q such that,
 	A = sqrtN
 	for delta in range(0,2**20):
 		A = sqrtN + delta
-		if factor(A,N):
+		if A*A < N:
+			continue
+		if gmpy2.iroot(A**2-N,2)[1]:	# A^2-N is a perfect square
 			return factor(A,N)
 	return 0
 
@@ -132,7 +135,9 @@ if __name__ == "__main__":
 87299716905260832220677716000193292608700095799937240774589677736978\
 17571267229951148662959627934791540'
 	
-	#print factor_N1(N1)
-	#print factor_N2(N2)
-	#print factor_N3(N3)
-	print break_RSA(N1,ct)
+	print factor_N1(N1)
+	start = timeit.default_timer()
+	print factor_N2(N2)
+	t = timeit.default_timer() - start
+	print factor_N3(N3)
+	print "message: {" + break_RSA(N1,ct) + '}'
